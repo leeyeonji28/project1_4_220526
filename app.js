@@ -37,6 +37,21 @@ app.get("/wise-sayings/random", async (req, res) => {
     return;
   }
 
+  // 조회수 증가
+
+  wiseSayingRow.hitCount++; // 방법 1. hitCount을 증가시키고 query에 ?를 넣어줌
+
+  await pool.query(
+    `
+    UPDATE wise_saying
+    SET hitCount = ? 
+    WHERE id = ?
+    `,
+    [wiseSayingRow.hitCount, wiseSayingRow.id] // 랜덤으로 뽑힌 데이터(wiseSayingRow)의 id 값
+  );
+
+  // wiseSayingRow.hitCount++; // 방법 2. query에 SET hitCount = hitCount+1을 넣고 나중에 증가시켜줌
+
   res.json({
     resultCode: "S-1",
     msg: "성공",
@@ -45,5 +60,5 @@ app.get("/wise-sayings/random", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Wise saying app listening on port ${port}`);
 });
